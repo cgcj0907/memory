@@ -21,8 +21,7 @@ export function ProfileEditor({ nickname, bio, avatarPath }: ProfileEditorProps)
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <Input defaultValue={nickname ?? ""} name="nickname" placeholder="昵称" />
-      <input name="avatarPath" readOnly type="hidden" value={avatarValue} />
-      <ImageUploader kind="avatar" label="头像" onChange={setAvatarValue} value={avatarValue} />
+      <ImageUploader kind="avatar" label="头像" name="avatarPath" onChange={setAvatarValue} value={avatarValue} />
       <Textarea defaultValue={bio ?? ""} name="bio" placeholder="写一点你们的共同小简介" />
       {state?.error ? <p className="text-sm text-rose-500">{state.error}</p> : null}
       {state?.success ? <p className="text-sm text-emerald-500">资料已经保存好了</p> : null}

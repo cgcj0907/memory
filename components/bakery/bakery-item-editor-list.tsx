@@ -3,6 +3,7 @@
 import { Plus, Trash2 } from "lucide-react";
 
 import { BreadTasteBadge } from "@/components/bakery/bread-taste-badge";
+import { ImageUploader } from "@/components/records/image-uploader";
 import { Button } from "@/components/ui/button";
 import type { BakeryItem } from "@/types/app";
 
@@ -32,6 +33,14 @@ export function BakeryItemEditorList({ items, onChange }: BakeryItemEditorListPr
             <button className="rounded-full bg-rose-50 p-2 text-rose-500" onClick={() => onChange(items.filter((_, i) => i !== index))} type="button">
               <Trash2 className="size-4" />
             </button>
+          </div>
+          <div className="mb-3">
+            <ImageUploader
+              kind="bakery-item"
+              label="面包图片"
+              onChange={(value) => updateItem(index, { imagePath: value })}
+              value={item.imagePath ?? ""}
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             {levels.map((level) => (

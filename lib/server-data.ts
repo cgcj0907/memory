@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import { mockRecords, mockSpace } from "@/lib/constants/mock-data";
 import { createClient } from "@/lib/supabase/server";
 import { getSpaceGateState } from "@/lib/utils/space-gate";
@@ -7,6 +8,7 @@ export async function getHomeData(): Promise<{
   gate: "preview" | "login" | "onboarding" | "home";
   space: SpaceSummary;
   records: RecordItem[];
+  authUser?: User;
 }> {
   const supabase = await createClient();
 
@@ -32,12 +34,13 @@ export async function getHomeData(): Promise<{
     return {
       gate: getSpaceGateState({ hasMembership: false, hasSupabase: true, hasUser: true }),
       space: mockSpace,
-      records: []
+      records: [],
+      authUser: user
     };
   }
 
   const [{ data: space }, { data: members }, { data: records }] = await Promise.all([
-    supabase.from("spaces").select("id, name, cover_image_path, pair_code").eq("id", membership.space_id).single(),
+    supabase.from("spaces").select("id, name, cover_image_path, pair_code").eq("id", membership.space_id).maybeSingle(),
     supabase.from("space_members").select("user_id, users_profile(email, nickname, avatar_path)").eq("space_id", membership.space_id),
     supabase
       .from("records")
@@ -48,6 +51,7 @@ export async function getHomeData(): Promise<{
 
   return {
     gate: getSpaceGateState({ hasMembership: true, hasSupabase: true, hasUser: true }),
+    authUser: user,
     space: {
       id: space?.id ?? mockSpace.id,
       name: space?.name ?? mockSpace.name,

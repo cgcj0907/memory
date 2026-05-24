@@ -1,5 +1,6 @@
 import { createSpaceAction, joinSpaceAction } from "@/actions/spaces";
 import { PageHeader } from "@/components/layout/page-header";
+import { CreateSpaceForm } from "@/components/onboarding/create-space-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,11 +28,7 @@ export default async function OnboardingPage() {
             <CardDescription>给你们的空间起个名字，再贴上一张封面。</CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={createSpaceAction} className="flex flex-col gap-4">
-              <Input name="name" placeholder="比如：糯米收藏夹" />
-              <Input name="coverImagePath" placeholder="空间封面图片链接" />
-              <Button type="submit">创建空间</Button>
-            </form>
+            <CreateSpaceForm />
           </CardContent>
         </Card>
         <Card>

@@ -25,7 +25,7 @@ export function BakerySectionEditor({
   return (
     <div className="flex flex-col gap-4 rounded-[28px] bg-pink-50/60 p-4">
       <Input onChange={(event) => onShopNameChange(event.target.value)} placeholder="店名" value={shopName} />
-      <ImageUploader label="店铺封面" onChange={onShopImagePathChange} value={shopImagePath} />
+      <ImageUploader kind="bakery-shop" label="店铺封面" onChange={onShopImagePathChange} value={shopImagePath} />
       <BakeryItemEditorList items={items} onChange={onItemsChange} />
     </div>
   );
