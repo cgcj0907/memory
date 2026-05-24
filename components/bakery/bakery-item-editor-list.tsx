@@ -44,8 +44,14 @@ export function BakeryItemEditorList({ items, onChange }: BakeryItemEditorListPr
           </div>
           <div className="flex flex-wrap gap-2">
             {levels.map((level) => (
-              <button key={level} onClick={() => updateItem(index, { tasteLevel: level })} type="button">
-                <BreadTasteBadge level={level} />
+              <button
+                aria-pressed={item.tasteLevel === level}
+                className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-200"
+                key={level}
+                onClick={() => updateItem(index, { tasteLevel: level })}
+                type="button"
+              >
+                <BreadTasteBadge level={level} selected={item.tasteLevel === level} />
               </button>
             ))}
           </div>

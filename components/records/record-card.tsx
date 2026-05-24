@@ -1,28 +1,45 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Croissant, UtensilsCrossed, MapPin, Sparkles } from "lucide-react";
 
 import { StickerBadge } from "@/components/ui/sticker-badge";
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 import { formatDisplayDate } from "@/lib/utils/date";
 import type { RecordItem } from "@/types/app";
 
+const ICON_MAP = {
+  Croissant,
+  UtensilsCrossed,
+  MapPin,
+  Sparkles,
+};
+
 export function RecordCard({ item }: { item: RecordItem }) {
   const category = CATEGORY_OPTIONS.find((option) => option.slug === item.categorySlug);
+  const Icon = category ? ICON_MAP[category.icon as keyof typeof ICON_MAP] : null;
+  
+  const displayImage = item.coverImagePath 
+    || item.bakeryShopImagePath 
+    || (item.bakeryItems && item.bakeryItems.length > 0 && item.bakeryItems[0].imagePath) 
+    || null;
 
   return (
     <Link
       className="group overflow-hidden rounded-[30px] border border-white/70 bg-white/85 shadow-[0_20px_50px_rgba(255,214,231,0.22)] transition hover:-translate-y-1"
       href={`/records/${item.id}`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-pink-50">
-        {item.coverImagePath ? (
+      <div className={`relative flex aspect-[4/3] items-center justify-center overflow-hidden ${category?.bgColor || "bg-pink-50"}`}>
+        {displayImage ? (
           <Image
             alt={item.title}
-            className="object-cover transition duration-500 group-hover:scale-105"
+            className="object-contain transition duration-500 group-hover:scale-105"
             fill
-            src={item.coverImagePath}
+            src={displayImage}
+            unoptimized
           />
-        ) : null}
+        ) : (
+          Icon ? <Icon className={`h-16 w-16 ${category?.iconColor}`} /> : null
+        )}
         {category ? <StickerBadge className={`absolute left-4 top-4 ${category.color}`}>{category.name}</StickerBadge> : null}
       </div>
       <div className="flex flex-col gap-2 p-5">

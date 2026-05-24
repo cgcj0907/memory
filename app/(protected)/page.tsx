@@ -5,6 +5,7 @@ import { StatCard } from "@/components/home/stat-card";
 import { TimelineList } from "@/components/home/timeline-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getHomeData } from "@/lib/server-data";
+import { buildHomeStats } from "@/lib/utils/home-stats";
 import { redirect } from "next/navigation";
 
 export default async function HomePage() {
@@ -18,12 +19,7 @@ export default async function HomePage() {
     redirect("/onboarding");
   }
 
-  const stats = [
-    { label: "总回忆", value: records.length },
-    { label: "面包店", value: records.filter((item) => item.categorySlug === "bakery").length },
-    { label: "去过的地方", value: records.filter((item) => item.categorySlug === "place").length },
-    { label: "最近更新", value: records[0]?.eventTime?.slice(5, 10).replace("-", ".") ?? "还没有" }
-  ];
+  const stats = buildHomeStats(records);
 
   return (
     <div className="flex flex-col gap-6">
@@ -31,7 +27,7 @@ export default async function HomePage() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
-          <StatCard key={stat.label} label={stat.label} value={stat.value} />
+          <StatCard icon={stat.icon} key={stat.label} label={stat.label} value={stat.value} />
         ))}
       </section>
 

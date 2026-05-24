@@ -89,11 +89,13 @@ export function RecordForm({ defaultValues }: RecordFormProps) {
         name="tags"
         render={({ field }) => <TagInput onChange={field.onChange} value={field.value} />}
       />
-      <Controller
-        control={form.control}
-        name="coverImagePath"
-        render={({ field }) => <ImageUploader label="记录封面" onChange={field.onChange} value={field.value} />}
-      />
+      {categorySlug !== "bakery" ? (
+        <Controller
+          control={form.control}
+          name="coverImagePath"
+          render={({ field }) => <ImageUploader label="记录封面" onChange={field.onChange} value={field.value} />}
+        />
+      ) : null}
 
       {categorySlug === "bakery" ? (
         <Controller

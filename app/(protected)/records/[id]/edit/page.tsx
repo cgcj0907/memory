@@ -22,6 +22,7 @@ export default async function EditRecordPage({ params }: { params: Promise<{ id:
               tags: record.tags,
               coverImagePath: record.coverImagePath ?? "",
               bakeryShopName: record.bakeryShopName ?? "",
+              bakeryShopImagePath: record.bakeryShopImagePath ?? "",
               bakeryItems:
                 record.bakeryItems?.map((item) => ({
                   name: item.name,

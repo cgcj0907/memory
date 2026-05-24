@@ -44,7 +44,11 @@ export async function getHomeData(): Promise<{
     supabase.from("space_members").select("user_id, users_profile(email, nickname, avatar_path)").eq("space_id", membership.space_id),
     supabase
       .from("records")
-      .select("id, title, event_time, location_text, description, tags, cover_image_path, created_at, updated_at")
+      .select(`
+        id, title, event_time, location_text, description, tags, cover_image_path, created_at, updated_at, 
+        categories(slug),
+        bakery_records(shop_name, shop_image_path, bakery_items(id, name, image_path, taste_level, note))
+      `)
       .eq("space_id", membership.space_id)
       .order("event_time", { ascending: false })
   ]);
@@ -70,22 +74,78 @@ export async function getHomeData(): Promise<{
         }) ?? mockSpace.members
     },
     records:
-      records?.map((record) => ({
-        id: record.id,
-        title: record.title,
-        categorySlug: "moment",
-        eventTime: record.event_time,
-        locationText: record.location_text,
-        description: record.description,
-        tags: record.tags ?? [],
-        coverImagePath: record.cover_image_path,
-        createdAt: record.created_at,
-        updatedAt: record.updated_at
-      })) ?? mockRecords
+      records?.map((record) => {
+        const category = Array.isArray(record.categories) ? record.categories[0] : record.categories;
+        const bakeryRecord = Array.isArray(record.bakery_records) ? record.bakery_records[0] : record.bakery_records;
+        
+        return {
+          id: record.id,
+          title: record.title,
+          categorySlug: (category?.slug as any) || "moment",
+          eventTime: record.event_time,
+          locationText: record.location_text,
+          description: record.description,
+          tags: record.tags ?? [],
+          coverImagePath: record.cover_image_path,
+          createdAt: record.created_at,
+          updatedAt: record.updated_at,
+          bakeryShopName: bakeryRecord?.shop_name,
+          bakeryShopImagePath: bakeryRecord?.shop_image_path,
+          bakeryItems: bakeryRecord?.bakery_items?.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            imagePath: item.image_path,
+            tasteLevel: item.taste_level,
+            note: item.note
+          }))
+        };
+      }) ?? mockRecords
   };
 }
 
-export async function getRecordById(recordId: string) {
-  const { records } = await getHomeData();
-  return records.find((record) => record.id === recordId) ?? mockRecords[0];
+export async function getRecordById(recordId: string): Promise<RecordItem> {
+  const supabase = await createClient();
+  
+  if (!supabase) {
+    return mockRecords.find((r) => r.id === recordId) ?? mockRecords[0];
+  }
+
+  const { data: record } = await supabase
+    .from("records")
+    .select(`
+      id, title, event_time, location_text, description, tags, cover_image_path, created_at, updated_at,
+      categories(slug),
+      bakery_records(shop_name, shop_image_path, bakery_items(id, name, image_path, taste_level, note))
+    `)
+    .eq("id", recordId)
+    .maybeSingle();
+
+  if (!record) {
+    return mockRecords.find((r) => r.id === recordId) ?? mockRecords[0];
+  }
+
+  const category = Array.isArray(record.categories) ? record.categories[0] : record.categories;
+  const bakeryRecord = Array.isArray(record.bakery_records) ? record.bakery_records[0] : record.bakery_records;
+  
+  return {
+    id: record.id,
+    title: record.title,
+    categorySlug: (category?.slug as any) || "moment",
+    eventTime: record.event_time,
+    locationText: record.location_text,
+    description: record.description,
+    tags: record.tags ?? [],
+    coverImagePath: record.cover_image_path,
+    createdAt: record.created_at,
+    updatedAt: record.updated_at,
+    bakeryShopName: bakeryRecord?.shop_name,
+    bakeryShopImagePath: bakeryRecord?.shop_image_path,
+    bakeryItems: bakeryRecord?.bakery_items?.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      imagePath: item.image_path,
+      tasteLevel: item.taste_level,
+      note: item.note
+    }))
+  };
 }

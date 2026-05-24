@@ -1,4 +1,4 @@
-export const APP_NAME = "两个人的回忆录";
+export const APP_NAME = "0907world回忆录";
 export const SIGNUP_INVITE_CODE = "0907";
 export const STORAGE_BUCKET = "memory-assets";
 

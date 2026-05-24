@@ -37,5 +37,6 @@ export type RecordItem = {
   updatedAt?: string;
   createdBy?: string | null;
   bakeryShopName?: string | null;
+  bakeryShopImagePath?: string | null;
   bakeryItems?: BakeryItem[];
 };

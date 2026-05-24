@@ -109,7 +109,7 @@ export function ImageUploader({
       {uploadError ? <p className="text-sm text-rose-500">{uploadError}</p> : null}
       {value ? (
         <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] border border-white/70 bg-pink-50">
-          <Image alt={label} className="object-cover" fill src={value} />
+          <Image alt={label} className="object-cover" fill src={value} unoptimized />
         </div>
       ) : null}
     </div>
